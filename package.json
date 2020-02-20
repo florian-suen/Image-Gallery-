@@ -1,0 +1,70 @@
+{
+  "name": "vanilla-settings",
+  "version": "1.0.0",
+  "description": "Javascript with SCSS",
+  "main": "index.js",
+  "scripts": {
+    "start": "webpack-dev-server --config webpack.development.js --open",
+    "build": "webpack --config webpack.production.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Starsuren/vanilla-settings.git"
+  },
+  "keywords": [
+    "Javascript",
+    "SCSS",
+    "Loaders",
+    "Setup",
+    "Babel",
+    "Webpack"
+  ],
+  "author": "Sun Jiefeng",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Starsuren/vanilla-settings/issues"
+  },
+  "homepage": "https://github.com/Starsuren/vanilla-settings#readme",
+  "devDependencies": {
+    "@babel/core": "^7.8.4",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.8.4",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^3.4.2",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-loader": "^3.0.3",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "file-loader": "^5.0.2",
+    "html-loader": "^0.5.5",
+    "html-webpack-plugin": "^3.2.0",
+    "mini-css-extract-plugin": "^0.9.0",
+    "optimize-css-assets-webpack-plugin": "^5.0.3",
+    "sass": "^1.25.0",
+    "sass-loader": "^8.0.2",
+    "style-loader": "^1.1.3",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-dev-server": "^3.10.2",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.8.4",
+    "clean-webpack-plugin": "^3.0.0"
+  },
+  "eslintConfig": {
+    "extends": "./node_modules/eslint-config-airbnb-base/.eslintrc",
+    "env": {
+      "browser": true,
+      "node": true
+    },
+    "rules": {
+      "no-trailing-spaces": "warn",
+      "no-console": "off"
+    }
+  }
+}
