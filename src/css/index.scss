@@ -6,14 +6,38 @@ $secondNumber: math.floor(math.random() * $max) + $min ;
 @return span $firstNumber / span $secondNumber;
 }
 
+
+  
+@keyframes scale-animation{
+from{
+  transform: scale(1);
+  opacity:1;
+}
+
+to{
+transform: scale(0.8);
+opacity:0.9;
+}
+}
+
+%image{
+    max-width:60%;
+    max-height:60%;
+    margin: auto auto;
+    z-index: 1;
+}
+
 main{
 max-width:1000px;
 
 }
 
+
+
 .gallery {
   display: grid;
-  grid-template-columns: repeat(auto-fill,10rem);
+  grid-template-columns: repeat(auto-fit,minmax(3rem,10rem));
+  grid-template-rows: repeat(auto-fit,10rem);
   grid-auto-flow: dense;
   grid-auto-rows: 8rem;
   grid-gap: 0.2rem;
@@ -70,6 +94,7 @@ div.gallery__item > img {
   object-fit: cover;
   min-height: 100%;
   max-width: 100%;
+  min-width: 10%;
 }
 
 .lightbox{
@@ -83,10 +108,22 @@ bottom:0;
 right:0;
 z-index: 1;
 
-&__image{
-  max-width:50%;
-  max-height: 50%;
-  margin: auto auto;
+&__image0{
+  @extend %image;
+}
+
+
+
+&__image1{
+ @extend %image;
+  &--scale-animation{
+  animation: scale-animation 0.3s ease 0s 1 normal forwards;
+  }
+}
+
+
+&__image2{
+  @extend %image;
 }
 
 &--open{
@@ -95,3 +132,4 @@ z-index: 1;
 
 }
  
+
