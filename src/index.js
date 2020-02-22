@@ -58,6 +58,22 @@ const INITIAL_LIGHTBOX_IMAGE_OFFSET = {
   left: null
 };
 
+function setImageSrc(event) {
+  const IMAGE_SOURCE = event.target.firstChild.src;
+  const IMAGE_SOURCE_PREV = event.target.previousElementSibling.firstChild.src;
+  const IMAGE_SOURCE_NEXT = event.target.nextElementSibling.firstChild.src;
+  QUERY.lightboxImage.current.src = IMAGE_SOURCE;
+  QUERY.lightboxImage.prev.src = IMAGE_SOURCE_PREV;
+  QUERY.lightboxImage.next.src = IMAGE_SOURCE_NEXT;
+}
+
+QUERY.gallery.addEventListener('click', (event) => {
+  if (event.target.classList.contains('gallery__item')) {
+    setImageSrc(event);
+    QUERY.lightbox.classList.add('lightbox--open');
+  }
+});
+
 function setLightboxImagePosition() {
   INITIAL_LIGHTBOX_IMAGE_OFFSET.top = QUERY.lightboxImage.current.offsetTop;
   INITIAL_LIGHTBOX_IMAGE_OFFSET.left = QUERY.lightboxImage.current.offsetLeft;
@@ -83,31 +99,23 @@ function addMouseMoveListener() {
   QUERY.lightbox.addEventListener('mousemove', mouseMoveHandler);
 }
 
-QUERY.gallery.addEventListener('click', (event) => {
-  if (event.target.classList.contains('gallery__item')) {
-    const IMAGE_SOURCE = event.target.firstChild.src;
-    const IMAGE_SOURCE_PREV = event.target.previousElementSibling.firstChild.src;
-    const IMAGE_SOURCE_NEXT = event.target.nextElementSibling.firstChild.src;
-    QUERY.lightboxImage.current.src = IMAGE_SOURCE;
-    QUERY.lightboxImage.prev.src = IMAGE_SOURCE_PREV;
-    QUERY.lightboxImage.next.src = IMAGE_SOURCE_NEXT;
-    QUERY.lightbox.classList.add('lightbox--open');
-  }
-});
+function mouseDownCleanUp(event) {
+  event.currentTarget.children[1].classList.remove('lightbox__image1--scale-animation');
+  STATE.imageMouseDown = false;
+  QUERY.lightbox.removeEventListener('mousemove', mouseMoveHandler);
+  resetLightboxImagePosition();
+}
 
 QUERY.lightbox.addEventListener('click', (event) => {
   if (STATE.imageMouseDown) {
-    event.currentTarget.firstChild.classList.remove('lightbox__image--scale-animation');
-    STATE.imageMouseDown = false;
-    QUERY.lightbox.removeEventListener('mousemove', mouseMoveHandler);
-    resetLightboxImagePosition();
+    mouseDownCleanUp(event);
   } else if (event.target.classList.contains('lightbox')) {
     event.target.classList.remove('lightbox--open');
   }
 });
 
 QUERY.lightboxImage.current.addEventListener('mousedown', (event) => {
-  event.currentTarget.classList.add('lightbox__image--scale-animation');
+  event.currentTarget.classList.add('lightbox__image1--scale-animation');
   STATE.imageMouseDown = true;
   if (QUERY.lightboxImage.current.style.position !== 'absolute') {
     setLightboxImagePosition();
