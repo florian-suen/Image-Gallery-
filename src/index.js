@@ -4,8 +4,8 @@ import './css/index.scss';
 const QUERY = {
   lightbox: document.querySelector('.lightbox'),
   gallery: document.querySelector('.gallery'),
-  lightboxImage: {
-    current: document.querySelector('.lightbox__image1'),
+  lightboxImg: {
+    cur: document.querySelector('.lightbox__image1'),
     prev: document.querySelector('.lightbox__image0'),
     next: document.querySelector('.lightbox__image2')
   }
@@ -60,11 +60,23 @@ const INITIAL_LIGHTBOX_IMAGE_OFFSET = {
 
 function setImageSrc(event) {
   const IMAGE_SOURCE = event.target.firstChild.src;
-  const IMAGE_SOURCE_PREV = event.target.previousElementSibling.firstChild.src;
-  const IMAGE_SOURCE_NEXT = event.target.nextElementSibling.firstChild.src;
-  QUERY.lightboxImage.current.src = IMAGE_SOURCE;
-  QUERY.lightboxImage.prev.src = IMAGE_SOURCE_PREV;
-  QUERY.lightboxImage.next.src = IMAGE_SOURCE_NEXT;
+  let imageSourcePrev = null;
+  let imageSourceNext = null;
+  if (!event.target.previousElementSibling) {
+    imageSourcePrev = event.target.parentNode.lastElementChild.firstChild.src;
+    imageSourceNext = event.target.nextElementSibling.firstChild.src;
+  } else if (!event.target.nextElementSibling) {
+    imageSourcePrev = event.target.previousElementSibling.firstChild.src;
+    imageSourceNext = event.target.parentNode.firstElementChild.firstChild.src;
+  } else {
+    imageSourcePrev = event.target.previousElementSibling.firstChild.src;
+    imageSourceNext = event.target.nextElementSibling.firstChild.src;
+  }
+
+
+  QUERY.lightboxImg.cur.src = IMAGE_SOURCE;
+  QUERY.lightboxImg.prev.src = imageSourcePrev;
+  QUERY.lightboxImg.next.src = imageSourceNext;
 }
 
 QUERY.gallery.addEventListener('click', (event) => {
@@ -74,24 +86,31 @@ QUERY.gallery.addEventListener('click', (event) => {
   }
 });
 
-function setLightboxImagePosition() {
-  INITIAL_LIGHTBOX_IMAGE_OFFSET.top = QUERY.lightboxImage.current.offsetTop;
-  INITIAL_LIGHTBOX_IMAGE_OFFSET.left = QUERY.lightboxImage.current.offsetLeft;
-  QUERY.lightboxImage.current.style.top = `${INITIAL_LIGHTBOX_IMAGE_OFFSET.top}px`;
-  QUERY.lightboxImage.current.style.left = `${INITIAL_LIGHTBOX_IMAGE_OFFSET.left}px`;
-  QUERY.lightboxImage.current.style.position = 'absolute';
+function setlightboxImgPosition() {
+  INITIAL_LIGHTBOX_IMAGE_OFFSET.top = QUERY.lightboxImg.cur.offsetTop;
+  INITIAL_LIGHTBOX_IMAGE_OFFSET.left = QUERY.lightboxImg.cur.offsetLeft;
+  QUERY.lightboxImg.cur.style.top = `${INITIAL_LIGHTBOX_IMAGE_OFFSET.top}px`;
+  QUERY.lightboxImg.cur.style.left = `${INITIAL_LIGHTBOX_IMAGE_OFFSET.left}px`;
+  QUERY.lightboxImg.cur.style.position = 'absolute';
 }
 
-function resetLightboxImagePosition() {
-  QUERY.lightboxImage.current.style.position = 'static';
+function resetlightboxImgPosition() {
+  QUERY.lightboxImg.cur.style.position = 'static';
 }
 
 const mouseMoveHandler = (event) => {
   const MOVEMENTX = event.movementX;
-  const CURRENT_LIGHTBOX_IMAGE_OFFSET_LEFT = QUERY.lightboxImage.current.offsetLeft;
-  QUERY.lightboxImage.current.style.left = `${MOVEMENTX + CURRENT_LIGHTBOX_IMAGE_OFFSET_LEFT}px`;
-  if (CURRENT_LIGHTBOX_IMAGE_OFFSET_LEFT < 100) {
-    console.log(CURRENT_LIGHTBOX_IMAGE_OFFSET_LEFT);
+  // const OFFSETLEFT_WIDTH = QUERY.lightboxImg.cur.offsetLeft + QUERY.lightboxImg.cur.offsetWidth;
+  // const OFFSETRIGHT = QUERY.lightbox.offsetWidth - OFFSETLEFT_WIDTH;
+  const CURRENT_LIGHTBOX_IMAGE_OFFSET_LEFT = QUERY.lightboxImg.cur.offsetLeft;
+  const LIGHTBOX_CENTER_MAX_WIDTH = QUERY.lightbox.clientWidth / 2;
+  const CENTER_SQRT = Math.sqrt(LIGHTBOX_CENTER_MAX_WIDTH) - 10;
+  const mousePos = Math.sqrt((event.clientX - LIGHTBOX_CENTER_MAX_WIDTH) ** 2);
+  QUERY.lightboxImg.cur.style.left = `${MOVEMENTX + CURRENT_LIGHTBOX_IMAGE_OFFSET_LEFT}px`;
+  if (MOVEMENTX < 0 && event.clientX < LIGHTBOX_CENTER_MAX_WIDTH) {
+    QUERY.lightboxImg.cur.style.opacity = CENTER_SQRT / mousePos;
+  } else if (MOVEMENTX > 0 && event.clientX > LIGHTBOX_CENTER_MAX_WIDTH) {
+    QUERY.lightboxImg.cur.style.opacity = CENTER_SQRT / mousePos;
   }
 };
 
@@ -103,7 +122,8 @@ function mouseDownCleanUp(event) {
   event.currentTarget.children[1].classList.remove('lightbox__image1--scale-animation');
   STATE.imageMouseDown = false;
   QUERY.lightbox.removeEventListener('mousemove', mouseMoveHandler);
-  resetLightboxImagePosition();
+  QUERY.lightboxImg.cur.style.opacity = 1;
+  resetlightboxImgPosition();
 }
 
 QUERY.lightbox.addEventListener('click', (event) => {
@@ -114,15 +134,15 @@ QUERY.lightbox.addEventListener('click', (event) => {
   }
 });
 
-QUERY.lightboxImage.current.addEventListener('mousedown', (event) => {
+QUERY.lightboxImg.cur.addEventListener('mousedown', (event) => {
   event.currentTarget.classList.add('lightbox__image1--scale-animation');
   STATE.imageMouseDown = true;
-  if (QUERY.lightboxImage.current.style.position !== 'absolute') {
-    setLightboxImagePosition();
+  if (QUERY.lightboxImg.cur.style.position !== 'absolute') {
+    setlightboxImgPosition();
   }
   addMouseMoveListener();
 });
 
-QUERY.lightboxImage.current.addEventListener('dragstart', (event) => {
+QUERY.lightboxImg.cur.addEventListener('dragstart', (event) => {
   event.preventDefault();
 });
