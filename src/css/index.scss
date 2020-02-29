@@ -1,4 +1,5 @@
 @use 'sass:math';
+@use 'sass:meta';
 
 @function spanGenerator($min: 1, $max: 3) {
 $firstNumber: math.floor(math.random() * $max) + $min;
@@ -7,27 +8,61 @@ $secondNumber: math.floor(math.random() * $max) + $min ;
 }
 
 @keyframes scale-animation{
-from{
+0%{
   transform: scale(1);
-  opacity:1;
 }
 
-to{
-transform: scale(0.8);
-opacity:0.9;
+50%{
+  transform: scale(0.8);
+}
+
+100%{
+transform: scale(0.9);
 }
 }
+
+@keyframes translate-animation{
+  0%{
+    transform: translate(0);
+  }
+  
+  50%{
+    transform: translate(5%);
+  }
+  
+  100%{
+  transform: translate(0);
+  }
+  }
+
+  @keyframes translate-animation-2{
+    0%{
+      transform: translate(0);
+    }
+    
+    50%{
+      transform: translate(-5%);
+    }
+    
+    100%{
+    transform: translate(0);
+    }
+    }
+
 
 %lightBoxImage{
-    max-width:60%;
-    max-height:60%;
+    max-width:50%;
+    max-height:50%;
     margin: auto auto;
     z-index: 1;
 }
 
+body{
+  overflow: hidden;
+}
+
 main{
 max-width:1000px;
-
 }
 
 
@@ -108,12 +143,28 @@ z-index: 1;
 
 &__image0{
   display:none;
+  opacity:0;
   @extend %lightBoxImage;
+  &--scale-animation{
+    animation: scale-animation 0.3s ease 0s 1 normal forwards;
+    }
 }
 
 &__image1{
  @extend %lightBoxImage;
-  &--scale-animatio{
+  &--translate-animation {
+    animation: translate-animation 0.3s ease 0s 1 normal forwards;
+  }
+  
+  &--translate-animation-2 {
+    animation: translate-animation-2 0.3s ease 0s 1 normal forwards;
+  }
+
+  &--opacity-animation {
+    opacity: 0;
+    transition: opacity 0.3s ease-in;
+  }
+  &--scale-animation{
   animation: scale-animation 0.3s ease 0s 1 normal forwards;
   }
 }
@@ -121,11 +172,19 @@ z-index: 1;
 
 &__image2{
   display:none;
+  opacity:0;
   @extend %lightBoxImage;
+  &--scale-animation{
+    animation: scale-animation 0.3s ease 0s 1 normal forwards;
+    }
+
+    &--scale-animation-2{
+      animation: scale-animation 0.3s ease 0s 1 normal forwards;
+      }
 }
 
 &--open{
-  display:grid;
+  display:flex;
 }
 
 }
